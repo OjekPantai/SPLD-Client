@@ -14,6 +14,8 @@ import {
   Tag,
   Grid,
   List,
+  ChevronRight,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,12 +44,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNarratives } from "@/hooks/useNarratives";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 const NarrativesPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [viewMode, setViewMode] = useState("grid");
   const { narratives, loading, error, fetchNarratives } = useNarratives();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchNarratives();
@@ -86,6 +90,11 @@ const NarrativesPage = () => {
       .join("")
       .toUpperCase()
       .substring(0, 2);
+  };
+
+  // Navigate to narrative detail page
+  const handleViewNarrative = (narrativeId) => {
+    navigate(`/admin/narratives/${narrativeId}`);
   };
 
   // Truncate text function
@@ -155,6 +164,7 @@ const NarrativesPage = () => {
             <CardFooter className="flex flex-wrap gap-2 pt-4">
               <Skeleton className="h-8 w-24" />
               <Skeleton className="h-8 w-32" />
+              <Skeleton className="h-8 w-full mt-2" />
             </CardFooter>
           </Card>
         ))}
@@ -167,7 +177,7 @@ const NarrativesPage = () => {
       {narratives.map((narrative) => (
         <Card
           key={narrative.id}
-          className="overflow-hidden hover:shadow-md transition-shadow"
+          className="overflow-hidden hover:shadow-md transition-shadow flex flex-col"
         >
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
@@ -192,7 +202,7 @@ const NarrativesPage = () => {
             </div>
           </CardHeader>
 
-          <CardContent>
+          <CardContent className="flex-grow">
             <p className="text-muted-foreground text-sm line-clamp-3 mb-3">
               {narrative.content}
             </p>
@@ -247,17 +257,27 @@ const NarrativesPage = () => {
             )}
           </CardContent>
 
-          <CardFooter className="flex flex-wrap gap-2 pt-2 pb-4">
-            <Badge
+          <CardFooter className="flex flex-col w-full gap-2 pt-2 pb-4">
+            <div className="flex items-center w-full">
+              <Badge
+                variant="secondary"
+                className="bg-blue-50 text-blue-700 hover:bg-blue-100"
+              >
+                <FileText className="mr-1 h-3 w-3" />
+                {truncateText(narrative.Report?.title || "No Report", 15)}
+              </Badge>
+              <Badge variant="outline" className="ml-auto">
+                ID: {narrative.id}
+              </Badge>
+            </div>
+            <Button
+              className="w-full mt-2"
               variant="secondary"
-              className="bg-blue-50 text-blue-700 hover:bg-blue-100"
+              onClick={() => handleViewNarrative(narrative.id)}
             >
-              <FileText className="mr-1 h-3 w-3" />
-              {truncateText(narrative.Report?.title || "No Report", 15)}
-            </Badge>
-            <Badge variant="outline" className="ml-auto">
-              ID: {narrative.id}
-            </Badge>
+              Baca Selengkapnya
+              <ChevronRight className="ml-1 h-4 w-4" />
+            </Button>
           </CardFooter>
         </Card>
       ))}
@@ -345,16 +365,23 @@ const NarrativesPage = () => {
                 {narrative.content}
               </p>
 
-              <div className="flex flex-wrap gap-2 mt-auto">
+              <div className="flex flex-wrap items-center gap-2 mt-4">
                 <Badge
                   variant="secondary"
                   className="bg-blue-50 text-blue-700 hover:bg-blue-100"
                 >
                   {narrative.Media?.length || 0} Media
                 </Badge>
-                <Badge variant="outline" className="ml-auto">
-                  ID: {narrative.id}
-                </Badge>
+                <Badge variant="outline">ID: {narrative.id}</Badge>
+                <Button
+                  className="ml-auto"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => handleViewNarrative(narrative.id)}
+                >
+                  Baca Selengkapnya
+                  <ChevronRight className="ml-1 h-4 w-4" />
+                </Button>
               </div>
             </div>
           </div>

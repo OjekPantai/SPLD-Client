@@ -13,6 +13,7 @@ import UserPage from "./pages/users/UserPage";
 import CreateUserPage from "./pages/users/CreateUserPage";
 import EditUserPage from "./pages/users/EditUserPage";
 import DashboardPage from "./pages/DashboardPage";
+import DetailNarrativePage from "./pages/narratives/DetailNarrativePage";
 
 const router = createBrowserRouter([
   {
@@ -39,15 +40,12 @@ const router = createBrowserRouter([
       },
       {
         path: "narratives",
-        element: <NarrativePage />,
-      },
-      {
-        path: "narratives/create",
-        element: <CreateNarrativePage />,
-      },
-      {
-        path: "narratives/edit/:id",
-        element: <EditNarrativePage />,
+        children: [
+          { index: true, element: <NarrativePage /> },
+          { path: "create", element: <CreateNarrativePage /> },
+          { path: ":id", element: <DetailNarrativePage /> },
+          { path: "edit/:id", element: <EditNarrativePage /> },
+        ],
       },
       {
         path: "reports",

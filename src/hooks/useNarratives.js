@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useApi } from "./useApi";
 
 /**
@@ -29,18 +29,24 @@ export const useNarratives = () => {
    * Fetch a single narrative by ID
    * @param {number|string} id - The narrative ID
    */
-  const fetchNarrativeById = async (id) => {
-    try {
-      const response = await get(`/narratives/${id}`);
-      if (response.success) {
-        setNarrative(response.data);
+  const fetchNarrativeById = useCallback(
+    async (id) => {
+      try {
+        const response = await get(`/narratives/${id}`);
+        if (response.success) {
+          setNarrative(response.data);
+        } else {
+          setNarrative(null);
+        }
+        return response;
+      } catch (err) {
+        console.error(`Error fetching narrative ${id}:`, err);
+        setNarrative(null);
+        return { success: false, message: err.message };
       }
-      return response;
-    } catch (err) {
-      console.error(`Error fetching narrative ${id}:`, err);
-      return { success: false, message: err.message };
-    }
-  };
+    },
+    [get]
+  );
 
   /**
    * Create a new narrative
