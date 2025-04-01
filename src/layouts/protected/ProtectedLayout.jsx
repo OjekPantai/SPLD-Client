@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Home, FileText, User, Settings } from "lucide-react";
+import { Home, FileText, User, Settings, ClipboardPlus } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import { Sidebar } from "@/layouts/protected/Sidebar";
 import { TopNavbar } from "@/layouts/protected/TopNavbar";
@@ -38,17 +38,16 @@ const ProtectedLayout = () => {
       name: "Narratives",
       path: "/admin/narratives",
       icon: <FileText className="w-5 h-5" />,
-      badge: "New",
+    },
+    {
+      name: "Reports",
+      path: "/admin/reports",
+      icon: <ClipboardPlus className="w-5 h-5" />,
     },
     {
       name: "Users",
       path: "/admin/users",
       icon: <User className="w-5 h-5" />,
-    },
-    {
-      name: "Reports",
-      path: "/admin/reports",
-      icon: <Settings className="w-5 h-5" />,
     },
   ];
 

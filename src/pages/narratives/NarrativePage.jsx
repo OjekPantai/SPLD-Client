@@ -44,7 +44,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNarratives } from "@/hooks/useNarratives";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const NarrativesPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -401,9 +401,6 @@ const NarrativesPage = () => {
             Daftar narasi yang telah dibuat berdasarkan laporan polsek.
           </p>
         </div>
-        <Button className="w-full md:w-auto">
-          <Plus className="mr-2 h-4 w-4" /> Buat Narasi Baru
-        </Button>
       </div>
 
       <div className="flex flex-col md:flex-row md:items-center gap-4 p-4 bg-muted/40 rounded-lg">
@@ -428,8 +425,6 @@ const NarrativesPage = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem>Semua Narasi</DropdownMenuItem>
-              <DropdownMenuItem>Narasi dengan Media</DropdownMenuItem>
-              <DropdownMenuItem>Narasi Tanpa Media</DropdownMenuItem>
               <DropdownMenuItem>Dibuat Hari Ini</DropdownMenuItem>
               <DropdownMenuItem>Dibuat Minggu Ini</DropdownMenuItem>
             </DropdownMenuContent>
@@ -461,12 +456,6 @@ const NarrativesPage = () => {
           <TabsTrigger value="all" className="flex-1 sm:flex-initial">
             Semua Narasi
           </TabsTrigger>
-          <TabsTrigger value="recent" className="flex-1 sm:flex-initial">
-            Terbaru
-          </TabsTrigger>
-          <TabsTrigger value="popular" className="flex-1 sm:flex-initial">
-            Populer
-          </TabsTrigger>
           <TabsTrigger value="my" className="flex-1 sm:flex-initial">
             Narasi Saya
           </TabsTrigger>
@@ -484,32 +473,6 @@ const NarrativesPage = () => {
           ) : (
             <EmptyState />
           )}
-        </TabsContent>
-
-        <TabsContent value="recent" className="space-y-4">
-          {loading ? (
-            <LoadingSkeletons />
-          ) : filteredNarratives.length > 0 ? (
-            viewMode === "grid" ? (
-              <GridView
-                narratives={filteredNarratives
-                  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                  .slice(0, 6)}
-              />
-            ) : (
-              <ListView
-                narratives={filteredNarratives
-                  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                  .slice(0, 6)}
-              />
-            )
-          ) : (
-            <EmptyState />
-          )}
-        </TabsContent>
-
-        <TabsContent value="popular">
-          <EmptyState />
         </TabsContent>
 
         <TabsContent value="my">

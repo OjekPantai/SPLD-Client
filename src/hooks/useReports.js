@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useApi } from "./useApi";
 
 /**
@@ -12,7 +12,7 @@ export const useReports = () => {
   /**
    * Fetch all reports
    */
-  const fetchReports = async () => {
+  const fetchReports = useCallback(async () => {
     try {
       const response = await get("/reports");
       if (response.success) {
@@ -23,79 +23,91 @@ export const useReports = () => {
       console.error("Error fetching reports:", err);
       return { success: false, message: err.message };
     }
-  };
+  }, [get]);
 
   /**
    * Fetch a single report by ID
    * @param {number|string} id - The report ID
    */
-  const fetchReportById = async (id) => {
-    try {
-      const response = await get(`/reports/${id}`);
-      if (response.success) {
-        setReport(response.data);
+  const fetchReportById = useCallback(
+    async (id) => {
+      try {
+        const response = await get(`/reports/${id}`);
+        if (response.success) {
+          setReport(response.data);
+        }
+        return response;
+      } catch (err) {
+        console.error(`Error fetching report ${id}:`, err);
+        return { success: false, message: err.message };
       }
-      return response;
-    } catch (err) {
-      console.error(`Error fetching report ${id}:`, err);
-      return { success: false, message: err.message };
-    }
-  };
+    },
+    [get]
+  );
 
   /**
    * Create a new report
    * @param {Object} reportData - The report data
    */
-  const createReport = async (reportData) => {
-    try {
-      const response = await post("/reports", reportData);
-      if (response.success) {
-        // Refresh reports list after creating
-        await fetchReports();
+  const createReport = useCallback(
+    async (reportData) => {
+      try {
+        const response = await post("/reports", reportData);
+        if (response.success) {
+          // Refresh reports list after creating
+          await fetchReports();
+        }
+        return response;
+      } catch (err) {
+        console.error("Error creating report:", err);
+        return { success: false, message: err.message };
       }
-      return response;
-    } catch (err) {
-      console.error("Error creating report:", err);
-      return { success: false, message: err.message };
-    }
-  };
+    },
+    [post, fetchReports]
+  );
 
   /**
    * Update an existing report
    * @param {number|string} id - The report ID
    * @param {Object} reportData - The updated report data
    */
-  const updateReport = async (id, reportData) => {
-    try {
-      const response = await put(`/reports/${id}`, reportData);
-      if (response.success) {
-        // Refresh reports list after updating
-        await fetchReports();
+  const updateReport = useCallback(
+    async (id, reportData) => {
+      try {
+        const response = await put(`/reports/${id}`, reportData);
+        if (response.success) {
+          // Refresh reports list after updating
+          await fetchReports();
+        }
+        return response;
+      } catch (err) {
+        console.error(`Error updating report ${id}:`, err);
+        return { success: false, message: err.message };
       }
-      return response;
-    } catch (err) {
-      console.error(`Error updating report ${id}:`, err);
-      return { success: false, message: err.message };
-    }
-  };
+    },
+    [put, fetchReports]
+  );
 
   /**
    * Delete a report
    * @param {number|string} id - The report ID
    */
-  const deleteReport = async (id) => {
-    try {
-      const response = await del(`/reports/${id}`);
-      if (response.success) {
-        // Refresh reports list after deleting
-        await fetchReports();
+  const deleteReport = useCallback(
+    async (id) => {
+      try {
+        const response = await del(`/reports/${id}`);
+        if (response.success) {
+          // Refresh reports list after deleting
+          await fetchReports();
+        }
+        return response;
+      } catch (err) {
+        console.error(`Error deleting report ${id}:`, err);
+        return { success: false, message: err.message };
       }
-      return response;
-    } catch (err) {
-      console.error(`Error deleting report ${id}:`, err);
-      return { success: false, message: err.message };
-    }
-  };
+    },
+    [del, fetchReports]
+  );
 
   return {
     reports,
