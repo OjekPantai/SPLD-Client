@@ -54,7 +54,6 @@ export const useReports = () => {
       try {
         const response = await post("/reports", reportData);
         if (response.success) {
-          // Refresh reports list after creating
           await fetchReports();
         }
         return response;

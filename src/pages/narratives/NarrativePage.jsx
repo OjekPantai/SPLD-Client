@@ -27,7 +27,6 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -45,6 +44,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNarratives } from "@/hooks/useNarratives";
 import { useNavigate } from "react-router-dom";
+import HeaderPage from "@/components/common/header-page";
 
 const NarrativesPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -394,14 +394,7 @@ const NarrativesPage = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Narratives</h2>
-          <p className="text-muted-foreground">
-            Daftar narasi yang telah dibuat berdasarkan laporan polsek.
-          </p>
-        </div>
-      </div>
+      <HeaderPage titlePage="Narasi Redaksi" descriptionPage="Daftar narasi" />
 
       <div className="flex flex-col md:flex-row md:items-center gap-4 p-4 bg-muted/40 rounded-lg">
         <div className="relative flex-grow">
@@ -450,35 +443,19 @@ const NarrativesPage = () => {
           </div>
         </div>
       </div>
-
-      <Tabs defaultValue="all" className="w-full">
-        <TabsList className="mb-4 w-full sm:w-auto">
-          <TabsTrigger value="all" className="flex-1 sm:flex-initial">
-            Semua Narasi
-          </TabsTrigger>
-          <TabsTrigger value="my" className="flex-1 sm:flex-initial">
-            Narasi Saya
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="all" className="space-y-4">
-          {loading ? (
-            <LoadingSkeletons />
-          ) : filteredNarratives.length > 0 ? (
-            viewMode === "grid" ? (
-              <GridView narratives={filteredNarratives} />
-            ) : (
-              <ListView narratives={filteredNarratives} />
-            )
+      <div>
+        {loading ? (
+          <LoadingSkeletons />
+        ) : filteredNarratives.length > 0 ? (
+          viewMode === "grid" ? (
+            <GridView narratives={filteredNarratives} />
           ) : (
-            <EmptyState />
-          )}
-        </TabsContent>
-
-        <TabsContent value="my">
+            <ListView narratives={filteredNarratives} />
+          )
+        ) : (
           <EmptyState />
-        </TabsContent>
-      </Tabs>
+        )}
+      </div>
     </div>
   );
 };

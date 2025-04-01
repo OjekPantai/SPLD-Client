@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
@@ -32,6 +31,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { useReports } from "@/hooks/useReports";
+import HeaderPage from "@/components/common/header-page";
 
 const ReportsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -50,8 +50,8 @@ const ReportsPage = () => {
       <p className="text-muted-foreground mb-4">
         Tidak ada laporan yang sesuai dengan pencarian Anda.
       </p>
-      <Button>
-        <Plus className="mr-2 h-4 w-4" /> Buat Narasi Baru
+      <Button onClick={() => navigate("/admin/reports/create")}>
+        <Plus className="mr-2 h-4 w-4" /> Buat Laporan Baru
       </Button>
     </div>
   );
@@ -104,7 +104,6 @@ const ReportsPage = () => {
     navigate(`/admin/reports/${reportId}`);
   };
 
-  // Loading Skeletons
   const LoadingSkeletons = () => (
     <div
       className={
@@ -224,14 +223,10 @@ const ReportsPage = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Reports</h2>
-          <p className="text-muted-foreground">
-            Daftar laporan yang telah dibuat oleh polsek
-          </p>
-        </div>
-      </div>
+      <HeaderPage
+        titlePage="Laporan"
+        descriptionPage="Daftar laporan yang telah dibuat oleh polsek."
+      />
 
       <div className="flex flex-col md:flex-row gap-4 p-4 bg-muted/40 rounded-lg">
         <div className="relative flex-grow">
@@ -280,34 +275,19 @@ const ReportsPage = () => {
         </div>
       </div>
 
-      <Tabs defaultValue="all" className="w-full">
-        <TabsList className="mb-4 w-full sm:w-auto">
-          <TabsTrigger value="all" className="flex-1 sm:flex-initial">
-            Semua Laporan
-          </TabsTrigger>
-          <TabsTrigger value="my" className="flex-1 sm:flex-initial">
-            Laporan Saya
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="all" className="space-y-4">
-          {loading ? (
-            <LoadingSkeletons />
-          ) : filteredReports.length > 0 ? (
-            viewMode === "grid" ? (
-              <ReportsGridView reports={filteredReports} />
-            ) : (
-              <ReportsListView reports={filteredReports} />
-            )
+      <div>
+        {loading ? (
+          <LoadingSkeletons />
+        ) : filteredReports.length > 0 ? (
+          viewMode === "grid" ? (
+            <ReportsGridView reports={filteredReports} />
           ) : (
-            <EmptyState />
-          )}
-        </TabsContent>
-
-        <TabsContent value="my">
+            <ReportsListView reports={filteredReports} />
+          )
+        ) : (
           <EmptyState />
-        </TabsContent>
-      </Tabs>
+        )}
+      </div>
     </div>
   );
 };
