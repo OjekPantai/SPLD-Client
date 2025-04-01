@@ -12,7 +12,7 @@ export function MobileMenu({ user, navigationItems, isActive }) {
       <div className="border-b px-6 py-4">
         <div className="flex items-center justify-between">
           <Link to="/admin" className="flex items-center">
-            <span className="font-bold text-xl">Admin Panel</span>
+            <span className="font-bold text-xl">SPLD</span>
           </Link>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon">

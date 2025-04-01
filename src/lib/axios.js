@@ -17,6 +17,8 @@ api.interceptors.response.use(
     if (error.response) {
       if (error.response.status === 401) {
         console.error("Unauthorized access. Please login again.");
+        sessionStorage.setItem("showLoginMessage", true);
+        window.location.href = "/login";
       }
 
       if (error.response.status === 403) {

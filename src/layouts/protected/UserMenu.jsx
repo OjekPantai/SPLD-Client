@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { toCapitalize } from "@/lib/utils";
 
 export function UserMenu({ user, handleLogout }) {
   return (
@@ -20,14 +21,17 @@ export function UserMenu({ user, handleLogout }) {
           className="relative h-9 flex items-center gap-2 px-2 rounded-full hover:bg-accent"
         >
           <Avatar className="h-8 w-8 border-2 border-muted">
-            <AvatarImage src={user.avatarUrl} alt={user.name} />
+            <AvatarImage
+              src={user.avatarUrl}
+              alt={toCapitalize(toCapitalize(user.name))}
+            />
             <AvatarFallback className="bg-primary text-primary-foreground">
-              {user.name.charAt(0)}
-              {user.name.split(" ")[1]?.charAt(0)}
+              {toCapitalize(user.name).charAt(0)}
+              {toCapitalize(user.name).split(" ")[1]?.charAt(0)}
             </AvatarFallback>
           </Avatar>
           <span className="hidden md:inline-flex text-sm font-medium">
-            {user.name}
+            {toCapitalize(user.name)}
           </span>
           <ChevronDown className="h-4 w-4 opacity-50" />
         </Button>
@@ -35,17 +39,17 @@ export function UserMenu({ user, handleLogout }) {
       <DropdownMenuContent align="end" className="w-64 p-2">
         <div className="flex items-center gap-4 p-2">
           <Avatar className="h-10 w-10">
-            <AvatarImage src={user.avatarUrl} alt={user.name} />
+            <AvatarImage src={user.avatarUrl} alt={toCapitalize(user.name)} />
             <AvatarFallback className="bg-primary text-primary-foreground">
-              {user.name.charAt(0)}
-              {user.name.split(" ")[1]?.charAt(0)}
+              {toCapitalize(user.name).charAt(0)}
+              {toCapitalize(user.name).split(" ")[1]?.charAt(0)}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col space-y-0.5">
-            <p className="text-sm font-medium">{user.name}</p>
+            <p className="text-sm font-medium">{toCapitalize(user.name)}</p>
             <p className="text-xs text-muted-foreground">{user.email}</p>
             <Badge variant="outline" className="w-fit text-xs mt-1">
-              {user.role}
+              {toCapitalize(user.role)}
             </Badge>
           </div>
         </div>

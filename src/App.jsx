@@ -1,4 +1,8 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  redirect,
+  RouterProvider,
+} from "react-router-dom";
 import PublicLayout from "./layouts/public/PublicLayout";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/auth/LoginPage";
@@ -14,6 +18,21 @@ import CreateUserPage from "./pages/users/CreateUserPage";
 import EditUserPage from "./pages/users/EditUserPage";
 import DashboardPage from "./pages/DashboardPage";
 import DetailNarrativePage from "./pages/narratives/DetailNarrativePage";
+import useAuthStore from "./store/authStore";
+
+const protectedLoader = async () => {
+  try {
+    const { checkAuth } = useAuthStore.getState();
+    await checkAuth();
+
+    const user = useAuthStore.getState().user;
+    if (!user) return redirect("/login");
+
+    return null;
+  } catch (error) {
+    return redirect("/login");
+  }
+};
 
 const router = createBrowserRouter([
   {
@@ -24,15 +43,12 @@ const router = createBrowserRouter([
         index: true,
         element: <HomePage />,
       },
-      {
-        path: "login",
-        element: <LoginPage />,
-      },
     ],
   },
   {
     path: "/admin",
     element: <ProtectedLayout />,
+    loader: protectedLoader,
     children: [
       {
         index: true,
@@ -49,29 +65,25 @@ const router = createBrowserRouter([
       },
       {
         path: "reports",
-        element: <ReportPage />,
-      },
-      {
-        path: "reports/create",
-        element: <CreateReportPage />,
-      },
-      {
-        path: "reports/edit/:id",
-        element: <EditReportPage />,
+        children: [
+          { index: true, element: <ReportPage /> },
+          { path: "create", element: <CreateReportPage /> },
+          { path: "edit/:id", element: <EditReportPage /> },
+        ],
       },
       {
         path: "users",
-        element: <UserPage />,
-      },
-      {
-        path: "users/create",
-        element: <CreateUserPage />,
-      },
-      {
-        path: "users/edit/:id",
-        element: <EditUserPage />,
+        children: [
+          { index: true, element: <UserPage /> },
+          { path: "create", element: <CreateUserPage /> },
+          { path: "edit/:id", element: <EditUserPage /> },
+        ],
       },
     ],
+  },
+  {
+    path: "login",
+    element: <LoginPage />,
   },
 ]);
 

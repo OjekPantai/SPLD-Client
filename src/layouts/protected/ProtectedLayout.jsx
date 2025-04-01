@@ -4,28 +4,32 @@ import { Home, FileText, User, Settings, ClipboardPlus } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import { Sidebar } from "@/layouts/protected/Sidebar";
 import { TopNavbar } from "@/layouts/protected/TopNavbar";
+import useAuthStore from "@/store/authStore";
+import { toast } from "sonner";
 
 const ProtectedLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, setTheme } = useTheme();
   const [isMounted, setIsMounted] = useState(false);
-
-  // Mock user data - in real app, this would come from your auth context
-  const user = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    role: "Admin",
-    avatarUrl: "", // Empty for fallback demo
-  };
+  const { user, logout, isLoading } = useAuthStore();
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  const handleLogout = () => {
-    // Add your logout logic here
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success("Logout successful", {
+        description: "You have been logged out successfully",
+      });
+      navigate("/login");
+    } catch (error) {
+      toast.error("Logout failed", {
+        description: error.message || "Failed to logout. Please try again",
+      });
+    }
   };
 
   const navigationItems = [
@@ -79,6 +83,7 @@ const ProtectedLayout = () => {
           navigationItems={navigationItems}
           isActive={isActive}
           handleLogout={handleLogout}
+          isLoading={isLoading}
         />
 
         {/* Page Content - With left margin to account for fixed sidebar */}

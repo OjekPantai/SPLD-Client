@@ -313,65 +313,7 @@ const DetailNarrativePage = () => {
                 </>
               )}
             </CardContent>
-
-            <CardFooter className="flex items-center gap-4 pt-6 border-t">
-              <Button variant="ghost" size="sm">
-                <Bookmark className="mr-2 h-4 w-4" />
-                Simpan
-              </Button>
-              <Button variant="ghost" size="sm">
-                <ThumbsUp className="mr-2 h-4 w-4" />
-                Sukai (0)
-              </Button>
-              <Button variant="ghost" size="sm">
-                <MessageSquare className="mr-2 h-4 w-4" />
-                Komentar (0)
-              </Button>
-            </CardFooter>
           </Card>
-
-          <Tabs defaultValue="diskusi" className="lg:col-span-3">
-            <TabsList>
-              <TabsTrigger value="diskusi">Diskusi (0)</TabsTrigger>
-              <TabsTrigger value="info">Informasi Lain</TabsTrigger>
-            </TabsList>
-            <TabsContent value="diskusi">
-              <div className="text-muted-foreground text-sm py-4">
-                Belum ada komentar. Jadilah yang pertama berkomentar!
-              </div>
-            </TabsContent>
-            <TabsContent value="info">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg">
-                  <Shield className="h-5 w-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium">Status Perlindungan</p>
-                    <p className="text-sm text-muted-foreground">
-                      Publik (Dapat diakses oleh semua orang)
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg">
-                  <PenTool className="h-5 w-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium">Lisensi</p>
-                    <p className="text-sm text-muted-foreground">
-                      Creative Commons BY-SA 4.0
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg">
-                  <Info className="h-5 w-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium">Versi</p>
-                    <p className="text-sm text-muted-foreground">
-                      1.0.0 - Dibuat pada 12 Mei 2024
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
         </div>
 
         {/* Right Sidebar */}

@@ -1,7 +1,7 @@
 "use client";
 
 import { Link } from "react-router-dom";
-import { Bell, Menu, Moon, Search, Sun } from "lucide-react";
+import { Bell, Menu, Moon, Search, Shield, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
@@ -38,15 +38,17 @@ export function TopNavbar({
 
           {/* Desktop Logo */}
           <Link to="/admin" className="hidden md:flex items-center space-x-2">
-            <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold">A</span>
+            <div className="h-8 w-8 rounded-full  flex items-center justify-center">
+              <span className="text-primary font-bold">
+                <Shield className="h-6 w-6 text-primary" />
+              </span>
             </div>
-            <span className="font-bold text-xl">Admin Panel</span>
+            <span className="font-bold text-xl">SPLD</span>
           </Link>
         </div>
 
         {/* Search Bar - Desktop Only */}
-        <div className="hidden md:flex flex-1 max-w-md mx-4">
+        {/* <div className="hidden md:flex flex-1 max-w-md mx-4">
           <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -54,7 +56,7 @@ export function TopNavbar({
               className="w-full pl-10 h-9 bg-muted/50"
             />
           </div>
-        </div>
+        </div> */}
 
         {/* Navbar Right Items */}
         <div className="flex items-center gap-2 md:gap-4">

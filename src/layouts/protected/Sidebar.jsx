@@ -7,8 +7,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { toCapitalize } from "@/lib/utils";
 
-export function Sidebar({ user, navigationItems, isActive, handleLogout }) {
+export function Sidebar({
+  user,
+  navigationItems,
+  isActive,
+  handleLogout,
+  isLoading,
+}) {
   return (
     <aside className="hidden md:block fixed left-0 top-16 bottom-0 w-64 border-r bg-background z-30">
       <div className="flex flex-col h-full">
@@ -44,19 +51,25 @@ export function Sidebar({ user, navigationItems, isActive, handleLogout }) {
             <Avatar className="h-10 w-10">
               <AvatarImage src={user.avatarUrl} alt={user.name} />
               <AvatarFallback className="bg-primary text-primary-foreground">
-                {user.name.charAt(0)}
-                {user.name.split(" ")[1]?.charAt(0)}
+                {toCapitalize(user.name).charAt(0)}
+                {toCapitalize(user.name).split(" ")[1]?.charAt(0)}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <span className="text-sm font-medium">{user.name}</span>
-              <span className="text-xs text-muted-foreground">{user.role}</span>
+              <span className="text-sm font-medium">
+                {" "}
+                {toCapitalize(user.name)}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {toCapitalize(user.role)}
+              </span>
             </div>
             <Button
               variant="ghost"
               size="icon"
               className="ml-auto rounded-full"
               onClick={handleLogout}
+              disabled={isLoading}
             >
               <LogOut className="h-4 w-4" />
             </Button>
