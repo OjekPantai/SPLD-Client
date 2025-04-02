@@ -19,6 +19,7 @@ import EditUserPage from "./pages/users/EditUserPage";
 import DashboardPage from "./pages/DashboardPage";
 import DetailNarrativePage from "./pages/narratives/DetailNarrativePage";
 import useAuthStore from "./store/authStore";
+import DetailReportPage from "./pages/reports/DetailReportPage";
 
 const protectedLoader = async () => {
   try {
@@ -58,7 +59,7 @@ const router = createBrowserRouter([
         path: "narratives",
         children: [
           { index: true, element: <NarrativePage /> },
-          { path: "create", element: <CreateNarrativePage /> },
+          { path: "create/:reportId", element: <CreateNarrativePage /> },
           { path: ":id", element: <DetailNarrativePage /> },
           { path: "edit/:id", element: <EditNarrativePage /> },
         ],
@@ -68,6 +69,7 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <ReportPage /> },
           { path: "create", element: <CreateReportPage /> },
+          { path: ":id", element: <DetailReportPage /> },
           { path: "edit/:id", element: <EditReportPage /> },
         ],
       },

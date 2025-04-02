@@ -10,6 +10,7 @@ import {
   Grid,
   List,
   Plus,
+  PlusCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -225,7 +226,13 @@ const ReportsPage = () => {
     <div className="space-y-6">
       <HeaderPage
         titlePage="Laporan"
-        descriptionPage="Daftar laporan yang telah dibuat oleh polsek."
+        descriptionPage="Daftar laporan yang tersedia"
+        buttonProps={{
+          label: "Tambah Laporan",
+          icon: PlusCircle,
+          variant: "outline",
+          onClick: () => navigate("/admin/reports/create"),
+        }}
       />
 
       <div className="flex flex-col md:flex-row gap-4 p-4 bg-muted/40 rounded-lg">

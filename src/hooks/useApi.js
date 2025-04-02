@@ -32,18 +32,29 @@ export const useApi = () => {
   /**
    * Make a POST request
    * @param {string} url - The endpoint URL
-   * @param {Object} data - The data to send
+   * @param {Object|FormData} data - The data to send
+   * @param {Object} config - Additional Axios config
    * @returns {Promise} - The response data
    */
-  const post = useCallback(async (url, data = {}) => {
+  const post = useCallback(async (url, data = {}, config = {}) => {
     setLoading(true);
     setError(null);
 
+    if (data instanceof FormData) {
+      config = {
+        ...config,
+        headers: {
+          ...(config.headers || {}),
+        },
+      };
+    }
+
     try {
-      const response = await api.post(url, data);
-      return response;
+      const response = await api.post(url, data, config);
+      return response.data;
     } catch (err) {
       setError(err);
+      console.error("API post error:", err.response || err);
       throw err;
     } finally {
       setLoading(false);

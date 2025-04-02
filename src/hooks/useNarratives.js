@@ -50,13 +50,27 @@ export const useNarratives = () => {
 
   /**
    * Create a new narrative
-   * @param {Object} narrativeData - The narrative data
+   * @param {FormData} narrativeData - The narrative data as FormData
    */
   const createNarrative = async (narrativeData) => {
     try {
-      const response = await post("/narratives", narrativeData);
+      // Log the FormData content for debugging
+      console.log("FormData content:");
+      for (let pair of narrativeData.entries()) {
+        console.log(
+          pair[0] +
+            ": " +
+            (pair[1] instanceof File ? `File: ${pair[1].name}` : pair[1])
+        );
+      }
+
+      const response = await post("/narratives", narrativeData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       if (response.success) {
-        // Refresh narratives list after creating
         await fetchNarratives();
       }
       return response;

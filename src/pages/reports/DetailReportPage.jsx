@@ -5,7 +5,6 @@ import {
   Calendar,
   User,
   FileText,
-  MapPin,
   Clock,
   ChevronLeft,
   Share2,
@@ -21,6 +20,9 @@ import {
   Info,
   PenTool,
   Shield,
+  AlertCircle,
+  PlusCircle,
+  PenToolIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -54,20 +56,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useNarratives } from "@/hooks/useNarratives";
+import { useReports } from "@/hooks/useReports";
+import { getStatusBadge } from "@/components/ui/status-badge";
 
-const DetailNarrativePage = () => {
+const DetailReportPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState(null);
-  const { narrative, loading, error, fetchNarrativeById } = useNarratives();
+  const { report, loading, error, fetchReportById } = useReports();
 
   useEffect(() => {
     if (id) {
-      fetchNarrativeById(id);
+      fetchReportById(id);
     }
-  }, [id, fetchNarrativeById]);
+  }, [id, fetchReportById]);
 
   const formatImagePath = (filePath) => {
     if (!filePath) return "/placeholder.svg";
@@ -128,40 +130,37 @@ const DetailNarrativePage = () => {
     return (
       <div className="container mx-auto py-10 max-w-5xl">
         <div className="flex flex-col items-center justify-center py-12 text-center">
-          <FileText className="h-12 w-12 text-destructive mb-4" />
-          <h3 className="text-xl font-medium">Error Loading Narrative</h3>
+          <AlertCircle className="h-12 w-12 text-destructive mb-4" />
+          <h3 className="text-xl font-medium">Error Loading Report</h3>
           <p className="text-muted-foreground mb-4">
             {error.message ||
-              "Failed to load narrative details. Please try again later."}
+              "Failed to load report details. Please try again later."}
           </p>
           <div className="flex gap-4">
             <Button
               variant="outline"
-              onClick={() => navigate("/admin/narratives")}
+              onClick={() => navigate("/admin/reports")}
             >
               Back to List
             </Button>
-            <Button onClick={() => fetchNarrativeById(id)}>Try Again</Button>
+            <Button onClick={() => fetchReportById(id)}>Try Again</Button>
           </div>
         </div>
       </div>
     );
   }
 
-  if (!narrative) {
+  if (!report) {
     return (
       <div className="container mx-auto py-10 max-w-5xl">
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="text-xl font-medium">Narrative Not Found</h3>
+          <h3 className="text-xl font-medium">Report Not Found</h3>
           <p className="text-muted-foreground mb-4">
-            The narrative you're looking for doesn't exist or has been removed.
+            The report you're looking for doesn't exist or has been removed.
           </p>
-          <Button
-            variant="outline"
-            onClick={() => navigate("/admin/narratives")}
-          >
-            Back to Narratives
+          <Button variant="outline" onClick={() => navigate("/admin/reports")}>
+            Back to Reports
           </Button>
         </div>
       </div>
@@ -169,16 +168,15 @@ const DetailNarrativePage = () => {
   }
 
   return (
-    <div className="container mx-auto py-6 max-w-full space-y-6">
+    <div className="py-6 max-w-full space-y-6">
       <div className="space-y-2">
         <Button
-          variant="ghost"
-          size="sm"
-          className="gap-1"
-          onClick={() => navigate("/admin/narratives")}
+          variant="outline"
+          className="gap-1 rounded-full"
+          onClick={() => navigate("/admin/reports")}
         >
           <ChevronLeft className="h-4 w-4" />
-          Kembali ke Daftar Narasi
+          Kembali
         </Button>
 
         <Breadcrumb>
@@ -190,8 +188,8 @@ const DetailNarrativePage = () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink as={Link} to="/admin/narratives">
-                Narratives
+              <BreadcrumbLink as={Link} to="/admin/reports">
+                Reports
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
@@ -209,68 +207,34 @@ const DetailNarrativePage = () => {
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <Badge
-                      variant="outline"
-                      className="bg-blue-50 text-blue-700 border-blue-200"
-                    >
-                      ID: {narrative.id}
-                    </Badge>
-                    <Badge variant="secondary">
-                      <Eye className="mr-1 h-3 w-3" />
-                      25 views
-                    </Badge>
+                    {getStatusBadge(report.status)}
                   </div>
-                  <CardTitle className="text-2xl">{narrative.title}</CardTitle>
+                  <CardTitle className="text-2xl">{report.title}</CardTitle>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm">
-                    <Share2 className="mr-1 h-4 w-4" />
-                    Share
-                  </Button>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
+                {report.status === "submitted" && (
+                  <div className="flex items-center gap-2">
+                    <Link to={`/admin/narratives/create/${report.id}`}>
                       <Button variant="outline" size="sm">
-                        <Download className="mr-1 h-4 w-4" />
-                        Export
+                        <PenToolIcon className="mr-1 h-4 w-4" />
+                        Tambah Narasi
                       </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuItem>
-                        <Printer className="mr-2 h-4 w-4" />
-                        Print
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Download className="mr-2 h-4 w-4" />
-                        PDF
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem>
-                        <FileText className="mr-2 h-4 w-4" />
-                        Word Document
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
+                    </Link>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground mt-4">
                 <div className="flex items-center">
                   <Calendar className="mr-1 h-4 w-4" />
-                  <span>{formatDate(narrative.createdAt)}</span>
-                </div>
-                <div className="flex items-center">
-                  <FileText className="mr-1 h-4 w-4" />
-                  <span>
-                    Laporan: {narrative.Report?.title || "Tidak ada judul"}
-                  </span>
+                  <span>{formatDate(report.createdAt)}</span>
                 </div>
                 <div className="flex items-center">
                   <User className="mr-1 h-4 w-4" />
-                  <span>Dibuat oleh: {narrative.User?.name || "Anonim"}</span>
+                  <span>Dibuat oleh: {report.User?.name || "Anonim"}</span>
                 </div>
                 <div className="flex items-center">
-                  <MapPin className="mr-1 h-4 w-4" />
-                  <span>Lokasi: Kec. Srumbung, Kab. Magelang</span>
+                  <Shield className="mr-1 h-4 w-4" />
+                  <span>Polsek: {report.User?.policeSectorId || "-"}</span>
                 </div>
               </div>
             </CardHeader>
@@ -278,18 +242,18 @@ const DetailNarrativePage = () => {
             <CardContent className="pt-6">
               <div className="prose prose-sm max-w-none mb-6">
                 <p className="whitespace-pre-wrap text-primary">
-                  {narrative.content}
+                  {report.content}
                 </p>
               </div>
 
-              {narrative.Media && narrative.Media.length > 0 && (
+              {report.Media && report.Media.length > 0 && (
                 <>
                   <h3 className="text-lg font-medium mb-3 flex items-center">
                     <ImageIcon className="mr-2 h-5 w-5" />
-                    Media Terlampir ({narrative.Media.length})
+                    Media Terlampir ({report.Media.length})
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {narrative.Media.map((media, index) => (
+                    {report.Media.map((media, index) => (
                       <Dialog key={media.id}>
                         <DialogTrigger asChild>
                           <div className="aspect-square overflow-hidden rounded-lg cursor-pointer">
@@ -328,17 +292,15 @@ const DetailNarrativePage = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center gap-3">
                 <Avatar>
-                  <AvatarImage src={narrative.User?.avatar} />
+                  <AvatarImage src={report.User?.avatar} />
                   <AvatarFallback>
-                    {getInitials(narrative.User?.name)}
+                    {getInitials(report.User?.name)}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-medium">
-                    {narrative.User?.name || "Anonim"}
-                  </p>
+                  <p className="font-medium">{report.User?.name || "Anonim"}</p>
                   <p className="text-sm text-muted-foreground">
-                    {narrative.User?.role || "Pengguna"}
+                    {report.User?.role || "Pengguna"}
                   </p>
                 </div>
               </div>
@@ -348,47 +310,10 @@ const DetailNarrativePage = () => {
               </Button>
             </CardContent>
           </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                Dokumen Terkait
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {narrative.Report ? (
-                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                  <FileText className="h-5 w-5 flex-shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                      {narrative.Report.title}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Laporan terkait
-                    </p>
-                  </div>
-                  <Button
-                    onClick={() =>
-                      navigate(`/admin/reports/${narrative.Report.id}`)
-                    }
-                    variant="ghost"
-                    size="icon"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                  </Button>
-                </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  Tidak ada dokumen terkait
-                </p>
-              )}
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>
   );
 };
 
-export default DetailNarrativePage;
+export default DetailReportPage;
