@@ -37,11 +37,13 @@ import {
 import { getRoleBadge } from "@/components/ui/role-badge";
 import { formatDate } from "@/lib/utils";
 import { useUsers } from "@/hooks/useUsers";
+import { useNavigate } from "react-router-dom";
 
 const UserPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [deletingUserId, setDeletingUserId] = useState(null);
   const { users, loading, error, fetchUsers, deleteUser } = useUsers();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchUsers();
@@ -57,7 +59,7 @@ const UserPage = () => {
   );
 
   const handleEditUser = (userId) => {
-    console.log(`Edit user dengan ID: ${userId}`);
+    navigate(`/admin/users/edit/${userId}`);
   };
 
   const LoadingSkeletons = () => {
@@ -102,7 +104,16 @@ const UserPage = () => {
 
   return (
     <div className="space-y-6">
-      <HeaderPage titlePage="Users" descriptionPage="Kelola data pengguna" />
+      <HeaderPage
+        titlePage="Users"
+        descriptionPage="Kelola data pengguna"
+        buttonProps={{
+          label: "Tambah user",
+          icon: PlusCircle,
+          variant: "outline",
+          onClick: () => navigate("/admin/users/create"),
+        }}
+      />
 
       <div className="flex flex-col md:flex-row md:items-center gap-4 p-4 bg-muted/40 rounded-lg">
         <div className="relative flex-grow">
@@ -115,10 +126,6 @@ const UserPage = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Button className="w-full md:w-auto" size="sm">
-          <PlusCircle className=" h-4 w-4" />
-          Tambah Pengguna
-        </Button>
       </div>
 
       <Card className="w-full">
@@ -127,7 +134,6 @@ const UserPage = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-12">ID</TableHead>
                   <TableHead>Nama</TableHead>
                   <TableHead className="hidden md:table-cell">Email</TableHead>
                   <TableHead className="hidden sm:table-cell">Role</TableHead>
@@ -143,7 +149,6 @@ const UserPage = () => {
                   {filteredUsers.length > 0 ? (
                     filteredUsers.map((user) => (
                       <TableRow key={user.id}>
-                        <TableCell className="font-medium">{user.id}</TableCell>
                         <TableCell>{user.name}</TableCell>
                         <TableCell className="hidden md:table-cell">
                           {user.email}

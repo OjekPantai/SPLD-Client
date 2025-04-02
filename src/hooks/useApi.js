@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import api from "../lib/axios";
+import { toast } from "sonner";
 
 /**
  * Custom hook for making API requests
@@ -54,7 +55,7 @@ export const useApi = () => {
       return response.data;
     } catch (err) {
       setError(err);
-      console.error("API post error:", err.response || err);
+      toast.error(err.response.data.message);
       throw err;
     } finally {
       setLoading(false);

@@ -112,9 +112,6 @@ const NarrativesPage = () => {
       <p className="text-muted-foreground mb-4">
         Tidak ada narasi yang sesuai dengan pencarian Anda.
       </p>
-      <Button>
-        <Plus className="mr-2 h-4 w-4" /> Buat Narasi Baru
-      </Button>
     </div>
   );
 
