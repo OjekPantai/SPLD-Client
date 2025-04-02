@@ -189,7 +189,7 @@ export default function EditUserPage() {
                       <SelectContent>
                         <SelectItem value="humas">Humas</SelectItem>
                         <SelectItem value="admin">Admin</SelectItem>
-                        <SelectItem value="operator">Operator</SelectItem>
+                        <SelectItem value="polsek">Polsek</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
