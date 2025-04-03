@@ -108,11 +108,29 @@ export const useReports = () => {
     [del, fetchReports]
   );
 
+  const submitReport = useCallback(
+    async (id) => {
+      try {
+        const response = await put(`/reports/${id}/submit`);
+        if (response.success) {
+          // Refresh reports list after updating
+          await fetchReports();
+        }
+        return response;
+      } catch (err) {
+        console.error(`Error updating report ${id}:`, err);
+        return { success: false, message: err.message };
+      }
+    },
+    [put, fetchReports]
+  );
+
   return {
     reports,
     report,
     loading,
     error,
+    submitReport,
     fetchReports,
     fetchReportById,
     createReport,

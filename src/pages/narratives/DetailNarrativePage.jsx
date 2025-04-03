@@ -1,16 +1,9 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { FileText, ChevronLeft, ArrowLeft } from "lucide-react";
+import { FileText, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { useNarratives } from "@/hooks/useNarratives";
 import ContentViewer from "@/components/ui/content-viewer";
 import DetailPageHeader from "@/components/ui/detail-page-header";
@@ -118,7 +111,7 @@ const DetailNarrativePage = () => {
   ];
 
   return (
-    <div className="container mx-auto py-6 max-w-full space-y-6">
+    <div className="py-6 max-w-full space-y-6">
       <DetailPageHeader breadcrumbs={breadcrumbs} />
 
       <ContentViewer data={narrative} type="narrative" />

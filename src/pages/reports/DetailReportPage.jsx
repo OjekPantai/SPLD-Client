@@ -11,13 +11,25 @@ import DetailPageHeader from "@/components/ui/detail-page-header";
 const DetailReportPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { report, loading, error, fetchReportById } = useReports();
+  const { report, loading, error, fetchReportById, submitReport } =
+    useReports();
 
   useEffect(() => {
     if (id) {
       fetchReportById(id);
     }
   }, [id, fetchReportById]);
+
+  const handleSubmit = async (data) => {
+    try {
+      const response = await submitReport(id, data);
+      if (response.success) {
+        navigate(`/admin/reports/${id}`);
+      }
+    } catch (err) {
+      console.error("Error submitting report:", err);
+    }
+  };
 
   if (loading) {
     return (
@@ -115,7 +127,7 @@ const DetailReportPage = () => {
         data={report}
         type="report"
         onAddNarrative={() => navigate(`/admin/narratives/create/${id}`)}
-        onSubmit={() => navigate(`/admin/reports/${id}/submit`)}
+        onSubmit={handleSubmit}
       />
     </div>
   );
