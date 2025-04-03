@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useNarratives } from "@/hooks/useNarratives";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const NarrativeForm = () => {
   const { createNarrative, loading, error } = useNarratives();
@@ -32,6 +32,7 @@ const NarrativeForm = () => {
   const [uploadStatus, setUploadStatus] = useState("");
 
   const { reportId } = useParams();
+  const navigate = useNavigate();
 
   const form = useForm({
     defaultValues: {
@@ -100,49 +101,32 @@ const NarrativeForm = () => {
       formData.append("title", values.title);
       formData.append("content", values.content);
 
-      if (reportId) {
-        formData.append("reportId", reportId);
-      } else {
+      if (!reportId) {
         toast.error("No report selected", {
           description: "A report is required to create a narrative",
         });
         return;
       }
+      formData.append("reportId", reportId);
 
       if (files.length > 0) {
         setUploadStatus(`Adding ${files.length} files...`);
-        files.forEach((file, index) => {
+        files.forEach((file) => {
           formData.append("media", file, file.name);
-          console.log(
-            `Appending file ${index + 1}/${files.length}: ${file.name} (${
-              file.type
-            }, ${file.size} bytes)`
-          );
         });
       }
+
       setUploadStatus("Uploading to server...");
-      const response = await createNarrative(formData);
+      await createNarrative(formData);
+
+      toast.success("Narrative created successfully");
+      navigate("/admin/narratives");
       setUploadStatus("");
-
-      if (response.success) {
-        toast.success("Narrative created successfully");
-
-        form.reset();
-        setFiles([]);
-        setPreviews([]);
-      } else {
-        toast.error("Failed to create narrative", {
-          description: response.message || "Server response indicated failure",
-        });
-      }
     } catch (err) {
       setUploadStatus("");
       console.error("Form submission error:", err);
       toast.error("Failed to create narrative", {
-        description:
-          error?.message ||
-          err?.response?.data?.message ||
-          "An unexpected error occurred",
+        description: err.message || "An unexpected error occurred",
       });
     }
   };

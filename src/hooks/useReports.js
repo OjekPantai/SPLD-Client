@@ -75,7 +75,6 @@ export const useReports = () => {
       try {
         const response = await put(`/reports/${id}`, reportData);
         if (response.success) {
-          // Refresh reports list after updating
           await fetchReports();
         }
         return response;

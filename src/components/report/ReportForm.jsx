@@ -14,20 +14,17 @@ import {
 import { X, Upload, FileText, AlertCircle } from "lucide-react";
 import api from "@/lib/axios";
 import { toast } from "sonner";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useNavigate } from "react-router-dom";
 
 const ReportForm = () => {
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+
+  const navigate = useNavigate();
 
   const form = useForm({
     defaultValues: {
@@ -107,13 +104,10 @@ const ReportForm = () => {
         },
       });
 
+      navigate("/admin/reports");
       toast("Laporan Berhasil Dibuat", {
         description: response.message,
       });
-
-      form.reset();
-      setFiles([]);
-      setPreviews([]);
     } catch (error) {
       toast("Gagal mengirim laporan", {
         description: error.response?.data?.message || "Terjadi kesalahan",
