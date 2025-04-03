@@ -205,77 +205,71 @@ const DetailNarrativePage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-3 space-y-6">
           <Card className="overflow-hidden">
-            <CardHeader className="pb-0">
-              <div className="flex items-center justify-between flex-wrap gap-2">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <Badge
-                      variant="outline"
-                      className="bg-blue-50 text-blue-700 border-blue-200"
-                    >
-                      ID: {narrative.id}
-                    </Badge>
-                    <Badge variant="secondary">
-                      <Eye className="mr-1 h-3 w-3" />
-                      25 views
-                    </Badge>
-                  </div>
-                  <CardTitle className="text-2xl">{narrative.title}</CardTitle>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className="space-y-1.5">
+                  <CardTitle className="text-2xl font-semibold tracking-tight">
+                    {narrative.title}
+                  </CardTitle>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm">
-                    <Share2 className="mr-1 h-4 w-4" />
+                <div className="flex items-center gap-3">
+                  <Button variant="outline" className="px-4 gap-2" size="sm">
+                    <Share2 className="h-[18px] w-[18px]" />
                     Share
                   </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm">
-                        <Download className="mr-1 h-4 w-4" />
+                      <Button
+                        variant="outline"
+                        className="px-4 gap-2"
+                        size="sm"
+                      >
+                        <Download className="h-[18px] w-[18px]" />
                         Export
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuItem>
-                        <Printer className="mr-2 h-4 w-4" />
+                    <DropdownMenuContent className="min-w-[160px]">
+                      <DropdownMenuItem className="gap-3">
+                        <Printer className="h-4 w-4" />
                         Print
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Download className="mr-2 h-4 w-4" />
+                      <DropdownMenuItem className="gap-3">
+                        <Download className="h-4 w-4" />
                         PDF
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem>
-                        <FileText className="mr-2 h-4 w-4" />
-                        Word Document
+                      <DropdownMenuItem className="gap-3">
+                        <FileText className="h-4 w-4" />
+                        Word
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
               </div>
 
-              <div className="flex items-center flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground mt-4">
-                <div className="flex items-center">
-                  <Calendar className="mr-1 h-4 w-4" />
+              <div className="flex items-center flex-wrap gap-x-4 gap-y-3 text-sm text-muted-foreground mt-3">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 flex-shrink-0" />
                   <span>{formatDate(narrative.createdAt)}</span>
                 </div>
-                <div className="flex items-center">
-                  <FileText className="mr-1 h-4 w-4" />
-                  <span>
-                    Laporan: {narrative.Report?.title || "Tidak ada judul"}
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 flex-shrink-0" />
+                  <span className="truncate">
+                    {narrative.Report?.title || "Tidak ada judul"}
                   </span>
                 </div>
-                <div className="flex items-center">
-                  <User className="mr-1 h-4 w-4" />
-                  <span>Dibuat oleh: {narrative.User?.name || "Anonim"}</span>
+                <div className="flex items-center gap-2">
+                  <User className="h-4 w-4 flex-shrink-0" />
+                  <span> {narrative.User?.name || "Anonim"}</span>
                 </div>
-                <div className="flex items-center">
-                  <MapPin className="mr-1 h-4 w-4" />
-                  <span>Lokasi: Kec. Srumbung, Kab. Magelang</span>
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 flex-shrink-0" />
+                  <span> Kec. Srumbung, Kab. Magelang</span>
                 </div>
               </div>
             </CardHeader>
 
-            <CardContent className="pt-6">
+            <CardContent className="pt-2">
               <div className="prose prose-sm max-w-none mb-6">
                 <p className="whitespace-pre-wrap text-primary">
                   {narrative.content}
@@ -353,7 +347,7 @@ const DetailNarrativePage = () => {
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <FileText className="h-5 w-5" />
-                Dokumen Terkait
+                Laporan Terkait
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -361,11 +355,8 @@ const DetailNarrativePage = () => {
                 <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
                   <FileText className="h-5 w-5 flex-shrink-0" />
                   <div className="flex-1">
-                    <p className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                    <p className="text-xs font-semibold text-gray-900 dark:text-gray-100">
                       {narrative.Report.title}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Laporan terkait
                     </p>
                   </div>
                   <Button

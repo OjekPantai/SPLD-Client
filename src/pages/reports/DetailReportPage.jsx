@@ -23,6 +23,7 @@ import {
   AlertCircle,
   PlusCircle,
   PenToolIcon,
+  CheckCircleIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -58,6 +59,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useReports } from "@/hooks/useReports";
 import { getStatusBadge } from "@/components/ui/status-badge";
+import { formatDate, getInitials } from "@/lib/utils";
 
 const DetailReportPage = () => {
   const navigate = useNavigate();
@@ -75,24 +77,6 @@ const DetailReportPage = () => {
     if (!filePath) return "/placeholder.svg";
     const formattedPath = filePath.replace(/\\/g, "/");
     return `http://localhost:3000/${formattedPath}`;
-  };
-
-  const formatDate = (dateString) => {
-    try {
-      return format(new Date(dateString), "dd MMMM yyyy, HH:mm");
-    } catch (error) {
-      return dateString;
-    }
-  };
-
-  const getInitials = (name) => {
-    if (!name) return "AN";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .substring(0, 2);
   };
 
   if (loading) {
@@ -211,7 +195,7 @@ const DetailReportPage = () => {
                   </div>
                   <CardTitle className="text-2xl">{report.title}</CardTitle>
                 </div>
-                {report.status === "submitted" && (
+                {report.status === "submitted" ? (
                   <div className="flex items-center gap-2">
                     <Link to={`/admin/narratives/create/${report.id}`}>
                       <Button variant="outline" size="sm">
@@ -220,6 +204,11 @@ const DetailReportPage = () => {
                       </Button>
                     </Link>
                   </div>
+                ) : (
+                  <Button variant="default" size="sm">
+                    <CheckCircleIcon className="mr-1 h-4 w-4" />
+                    Submit
+                  </Button>
                 )}
               </div>
 

@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { format } from "date-fns";
 import {
   Search,
   Filter,
   FileText,
-  ImageIcon,
   ChevronDown,
-  ChevronRight,
   Grid,
   List,
   Plus,
@@ -18,9 +15,7 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import {
@@ -29,10 +24,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { useReports } from "@/hooks/useReports";
 import HeaderPage from "@/components/common/header-page";
+import GridViewCard from "@/components/ui/grid-view-card";
+import ListViewCard from "@/components/ui/list-view-card";
 
 const ReportsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -77,30 +73,6 @@ const ReportsPage = () => {
       report.User?.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const formatImagePath = (filePath) => {
-    const formattedPath = filePath?.replace(/\\/g, "/");
-    return `http://localhost:3000/${formattedPath}`;
-  };
-
-  const formatDate = (dateString) => {
-    try {
-      return format(new Date(dateString), "dd MMMM yyyy, HH:mm");
-    } catch (error) {
-      return dateString;
-    }
-  };
-
-  const getStatusBadge = (status) => {
-    const statusColors = {
-      submitted: "bg-green-100 text-green-800",
-      draft: "bg-yellow-100 text-yellow-800",
-      processed: "bg-blue-100 text-blue-800",
-    };
-    return (
-      <Badge className={`${statusColors[status]} capitalize`}>{status}</Badge>
-    );
-  };
-
   const handleViewReport = (reportId) => {
     navigate(`/admin/reports/${reportId}`);
   };
@@ -129,94 +101,6 @@ const ReportsPage = () => {
             </CardFooter>
           </Card>
         ))}
-    </div>
-  );
-
-  // Grid View Component
-  const ReportsGridView = ({ reports }) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {reports.map((report) => (
-        <Card key={report.id} className="hover:shadow-md transition-shadow">
-          <CardHeader>
-            <CardTitle className="text-lg">{report.title}</CardTitle>
-            <div className="flex items-center gap-2">
-              <Avatar className="h-6 w-6">
-                <AvatarImage src={`/avatars/${report.User?.id}.png`} />
-                <AvatarFallback>
-                  {report.User?.name?.slice(0, 2)}
-                </AvatarFallback>
-              </Avatar>
-              <span className="text-sm">{report.User?.name}</span>
-            </div>
-          </CardHeader>
-
-          <CardContent>
-            <p className="line-clamp-3 text-muted-foreground">
-              {report.content}
-            </p>
-            {report.Media?.length > 0 && (
-              <img
-                src={formatImagePath(report.Media[0].filePath)}
-                alt="Report media"
-                className="mt-4 rounded-md object-cover h-40 w-full"
-              />
-            )}
-          </CardContent>
-
-          <CardFooter className="flex justify-between">
-            {getStatusBadge(report.status)}
-            <Button
-              variant="secondary"
-              onClick={() => handleViewReport(report.id)}
-            >
-              Details
-            </Button>
-          </CardFooter>
-        </Card>
-      ))}
-    </div>
-  );
-
-  // List View Component
-  const ReportsListView = ({ reports }) => (
-    <div className="space-y-4">
-      {reports.map((report) => (
-        <Card key={report.id} className="hover:shadow-md transition-shadow">
-          <div className="flex flex-col md:flex-row">
-            {report.Media?.length > 0 && (
-              <div className="md:w-48 border-r">
-                <img
-                  src={formatImagePath(report.Media[0].filePath)}
-                  alt="Report media"
-                  className="h-48 w-full object-cover"
-                />
-              </div>
-            )}
-            <div className="flex-1 p-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-lg font-semibold">{report.title}</h3>
-                  <div className="flex items-center gap-2 mt-2">
-                    {getStatusBadge(report.status)}
-                    <Badge variant="outline">
-                      {formatDate(report.createdAt)}
-                    </Badge>
-                  </div>
-                </div>
-                <Button
-                  variant="secondary"
-                  onClick={() => handleViewReport(report.id)}
-                >
-                  View
-                </Button>
-              </div>
-              <p className="mt-4 text-muted-foreground line-clamp-2">
-                {report.content}
-              </p>
-            </div>
-          </div>
-        </Card>
-      ))}
     </div>
   );
 
@@ -287,9 +171,15 @@ const ReportsPage = () => {
           <LoadingSkeletons />
         ) : filteredReports.length > 0 ? (
           viewMode === "grid" ? (
-            <ReportsGridView reports={filteredReports} />
+            <GridViewCard
+              items={filteredReports}
+              onDetailClick={handleViewReport}
+            />
           ) : (
-            <ReportsListView reports={filteredReports} />
+            <ListViewCard
+              items={filteredReports}
+              handleViewitem={handleViewReport}
+            />
           )
         ) : (
           <EmptyState />

@@ -1,20 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { format } from "date-fns";
 import {
   Search,
   Filter,
-  Calendar,
-  User,
   FileText,
-  ImageIcon,
-  Plus,
   ChevronDown,
-  MapPin,
-  Clock,
-  Tag,
   Grid,
   List,
-  ChevronRight,
   ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,15 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
@@ -41,14 +24,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNarratives } from "@/hooks/useNarratives";
 import { useNavigate } from "react-router-dom";
 import HeaderPage from "@/components/common/header-page";
 
+import GridViewCard from "@/components/ui/grid-view-card";
+import ListViewCard from "@/components/ui/list-view-card";
+
 const NarrativesPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedImage, setSelectedImage] = useState(null);
   const [viewMode, setViewMode] = useState("grid");
   const { narratives, loading, error, fetchNarratives } = useNarratives();
   const navigate = useNavigate();
@@ -69,40 +53,9 @@ const NarrativesPage = () => {
         .includes(searchTerm.toLowerCase())
   );
 
-  const formatImagePath = (filePath) => {
-    const formattedPath = filePath?.replace(/\\/g, "/");
-    return `http://localhost:3000/${formattedPath}`;
-  };
-
-  const formatDate = (dateString) => {
-    try {
-      return format(new Date(dateString), "dd MMMM yyyy, HH:mm");
-    } catch (error) {
-      return dateString;
-    }
-  };
-
-  const getInitials = (name) => {
-    if (!name) return "AN";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .substring(0, 2);
-  };
-
   // Navigate to narrative detail page
   const handleViewNarrative = (narrativeId) => {
     navigate(`/admin/narratives/${narrativeId}`);
-  };
-
-  // Truncate text function
-  const truncateText = (text, maxLength) => {
-    if (!text) return "";
-    return text.length > maxLength
-      ? text.substring(0, maxLength) + "..."
-      : text;
   };
 
   const EmptyState = () => (
@@ -168,225 +121,6 @@ const NarrativesPage = () => {
     </div>
   );
 
-  // Grid view for narratives
-  const GridView = ({ narratives }) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {narratives.map((narrative) => (
-        <Card
-          key={narrative.id}
-          className="overflow-hidden hover:shadow-md transition-shadow flex flex-col"
-        >
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <CardTitle className="line-clamp-1 text-lg">
-                {narrative.title}
-              </CardTitle>
-              <Badge variant="outline" className="whitespace-nowrap">
-                <Calendar className="mr-1 h-3 w-3" />
-                {formatDate(narrative.createdAt).split(",")[0]}
-              </Badge>
-            </div>
-            <div className="flex items-center text-sm text-muted-foreground mt-1">
-              <Avatar className="h-6 w-6 mr-2">
-                <AvatarImage
-                  src={`/avatars/${narrative.User?.id || "default"}.png`}
-                />
-                <AvatarFallback>
-                  {getInitials(narrative.User?.name)}
-                </AvatarFallback>
-              </Avatar>
-              <span>{narrative.User?.name || "Anonim"}</span>
-            </div>
-          </CardHeader>
-
-          <CardContent className="flex-grow">
-            <p className="text-muted-foreground text-sm line-clamp-3 mb-3">
-              {narrative.content}
-            </p>
-
-            {narrative.Media?.length > 0 && (
-              <div className="grid grid-cols-2 gap-2 mt-2">
-                {narrative.Media.slice(0, 2).map((media) => (
-                  <Dialog key={media.id}>
-                    <DialogTrigger asChild>
-                      <div
-                        className="relative aspect-video cursor-pointer rounded-md overflow-hidden border bg-muted hover:bg-muted/80 transition-colors"
-                        onClick={() => setSelectedImage(media)}
-                      >
-                        <img
-                          src={
-                            formatImagePath(media.filePath) ||
-                            "/placeholder.svg"
-                          }
-                          alt={`Media untuk ${narrative.title}`}
-                          className="object-cover w-full h-full"
-                        />
-                        <div className="absolute bottom-2 right-2 bg-background/80 p-1 rounded-md">
-                          <ImageIcon className="h-3 w-3" />
-                        </div>
-                      </div>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-xl">
-                      <DialogHeader>
-                        <DialogTitle>{narrative.title} - Media</DialogTitle>
-                      </DialogHeader>
-                      <div className="flex items-center justify-center">
-                        <img
-                          src={
-                            formatImagePath(media.filePath) ||
-                            "/placeholder.svg"
-                          }
-                          alt={`Media untuk ${narrative.title}`}
-                          className="max-h-[70vh] object-contain rounded-md"
-                        />
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                ))}
-                {narrative.Media.length > 2 && (
-                  <div className="relative aspect-video cursor-pointer rounded-md overflow-hidden border bg-muted/90 hover:bg-muted/70 transition-colors flex items-center justify-center">
-                    <span className="text-lg font-medium">
-                      +{narrative.Media.length - 2}
-                    </span>
-                  </div>
-                )}
-              </div>
-            )}
-          </CardContent>
-
-          <CardFooter className="flex flex-col w-full gap-2 pt-2 pb-4">
-            <div className="flex items-center w-full">
-              <Badge
-                variant="secondary"
-                className="bg-blue-50 text-blue-700 hover:bg-blue-100"
-              >
-                <FileText className="mr-1 h-3 w-3" />
-                {truncateText(narrative.Report?.title || "No Report", 15)}
-              </Badge>
-              <Badge variant="outline" className="ml-auto">
-                ID: {narrative.id}
-              </Badge>
-            </div>
-            <Button
-              className="w-full mt-2"
-              variant="secondary"
-              onClick={() => handleViewNarrative(narrative.id)}
-            >
-              Baca Selengkapnya
-              <ChevronRight className="ml-1 h-4 w-4" />
-            </Button>
-          </CardFooter>
-        </Card>
-      ))}
-    </div>
-  );
-
-  // List view for narratives
-  const ListView = ({ narratives }) => (
-    <div className="space-y-4">
-      {narratives.map((narrative) => (
-        <Card
-          key={narrative.id}
-          className="overflow-hidden hover:shadow-md transition-shadow"
-        >
-          <div className="flex flex-col md:flex-row">
-            {narrative.Media?.length > 0 && (
-              <div className="w-full md:w-48 h-48 md:h-auto relative overflow-hidden border-b md:border-b-0 md:border-r">
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <img
-                      src={
-                        formatImagePath(narrative.Media[0].filePath) ||
-                        "/placeholder.svg"
-                      }
-                      alt={`Media untuk ${narrative.title}`}
-                      className="object-cover w-full h-full cursor-pointer"
-                      onClick={() => setSelectedImage(narrative.Media[0])}
-                    />
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-xl">
-                    <DialogHeader>
-                      <DialogTitle>{narrative.title} - Media</DialogTitle>
-                    </DialogHeader>
-                    <div className="flex items-center justify-center">
-                      <img
-                        src={
-                          formatImagePath(narrative.Media[0].filePath) ||
-                          "/placeholder.svg"
-                        }
-                        alt={`Media untuk ${narrative.title}`}
-                        className="max-h-[70vh] object-contain rounded-md"
-                      />
-                    </div>
-                  </DialogContent>
-                </Dialog>
-                {narrative.Media.length > 1 && (
-                  <Badge className="absolute bottom-2 right-2 bg-background/80">
-                    +{narrative.Media.length - 1} foto
-                  </Badge>
-                )}
-              </div>
-            )}
-
-            <div className="flex-1 p-4">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="font-medium text-lg">{narrative.title}</h3>
-                <Badge variant="outline">
-                  <Calendar className="mr-1 h-3 w-3" />
-                  {formatDate(narrative.createdAt)}
-                </Badge>
-              </div>
-
-              <div className="flex items-center mb-3">
-                <Avatar className="h-6 w-6 mr-2">
-                  <AvatarImage
-                    src={`/avatars/${narrative.User?.id || "default"}.png`}
-                  />
-                  <AvatarFallback>
-                    {getInitials(narrative.User?.name)}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="text-sm text-muted-foreground">
-                  {narrative.User?.name || "Anonim"}
-                </span>
-
-                <div className="mx-2 h-4 border-r border-gray-200"></div>
-
-                <FileText className="h-4 w-4 mr-1 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">
-                  {truncateText(narrative.Report?.title || "No Report", 20)}
-                </span>
-              </div>
-
-              <p className="text-muted-foreground text-sm line-clamp-2 mb-3">
-                {narrative.content}
-              </p>
-
-              <div className="flex flex-wrap items-center gap-2 mt-4">
-                <Badge
-                  variant="secondary"
-                  className="bg-blue-50 text-blue-700 hover:bg-blue-100"
-                >
-                  {narrative.Media?.length || 0} Media
-                </Badge>
-                <Badge variant="outline">ID: {narrative.id}</Badge>
-                <Button
-                  className="ml-auto"
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => handleViewNarrative(narrative.id)}
-                >
-                  Baca Selengkapnya
-                  <ChevronRight className="ml-1 h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </div>
-        </Card>
-      ))}
-    </div>
-  );
-
   if (error) return <ErrorState />;
 
   return (
@@ -445,9 +179,15 @@ const NarrativesPage = () => {
           <LoadingSkeletons />
         ) : filteredNarratives.length > 0 ? (
           viewMode === "grid" ? (
-            <GridView narratives={filteredNarratives} />
+            <GridViewCard
+              items={filteredNarratives}
+              onDetailClick={handleViewNarrative}
+            />
           ) : (
-            <ListView narratives={filteredNarratives} />
+            <ListViewCard
+              items={filteredNarratives}
+              handleViewitem={handleViewNarrative}
+            />
           )
         ) : (
           <EmptyState />

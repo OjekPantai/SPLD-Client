@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 const STATUS_VARIANTS = {
   draft: "yellow",
   submitted: "green",
+  published: "purple",
 };
 
 /**

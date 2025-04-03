@@ -23,3 +23,24 @@ export const formatDate = (dateString) => {
     year: "numeric",
   });
 };
+
+export const getInitials = (name) => {
+  if (!name) return "AN";
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .substring(0, 2);
+};
+
+export const formatImagePath = (filePath) => {
+  const formattedPath = filePath?.replace(/\\/g, "/");
+  return `http://localhost:3000/${formattedPath}`;
+};
+
+// Truncate text function
+export const truncateText = (text, maxLength) => {
+  if (!text) return "";
+  return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+};
