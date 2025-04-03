@@ -1,6 +1,5 @@
 import { useState, useCallback } from "react";
 import api from "../lib/axios";
-import { toast } from "sonner";
 
 /**
  * Custom hook for making API requests
@@ -21,10 +20,18 @@ export const useApi = () => {
 
     try {
       const response = await api.get(url, { params });
-      return response;
+      return {
+        success: true,
+        data: response.data,
+      };
     } catch (err) {
       setError(err);
-      throw err;
+      return {
+        success: false,
+        message:
+          err.response?.data?.message ||
+          "Terjadi kesalahan saat mengambil data",
+      };
     } finally {
       setLoading(false);
     }
@@ -52,11 +59,18 @@ export const useApi = () => {
 
     try {
       const response = await api.post(url, data, config);
-      return response.data;
+      return {
+        success: true,
+        data: response.data,
+      };
     } catch (err) {
       setError(err);
-      toast.error(err.response.data.message);
-      throw err;
+      return {
+        success: false,
+        message:
+          err.response?.data?.message ||
+          "Terjadi kesalahan saat memproses permintaan",
+      };
     } finally {
       setLoading(false);
     }
@@ -74,10 +88,18 @@ export const useApi = () => {
 
     try {
       const response = await api.put(url, data);
-      return response;
+      return {
+        success: true,
+        data: response.data,
+      };
     } catch (err) {
       setError(err);
-      throw err;
+      return {
+        success: false,
+        message:
+          err.response?.data?.message ||
+          "Terjadi kesalahan saat memperbarui data",
+      };
     } finally {
       setLoading(false);
     }
@@ -94,10 +116,18 @@ export const useApi = () => {
 
     try {
       const response = await api.delete(url);
-      return response;
+      return {
+        success: true,
+        data: response.data,
+      };
     } catch (err) {
       setError(err);
-      throw err;
+      return {
+        success: false,
+        message:
+          err.response?.data?.message ||
+          "Terjadi kesalahan saat menghapus data",
+      };
     } finally {
       setLoading(false);
     }

@@ -20,6 +20,7 @@ import DashboardPage from "./pages/DashboardPage";
 import DetailNarrativePage from "./pages/narratives/DetailNarrativePage";
 import useAuthStore from "./store/authStore";
 import DetailReportPage from "./pages/reports/DetailReportPage";
+import PoliceSectorPage from "./pages/policeSector/PoliceSectorPage";
 
 const protectedLoader = async () => {
   try {
@@ -72,6 +73,10 @@ const router = createBrowserRouter([
           { path: ":id", element: <DetailReportPage /> },
           { path: "edit/:id", element: <EditReportPage /> },
         ],
+      },
+      {
+        path: "police-sectors",
+        children: [{ index: true, element: <PoliceSectorPage /> }],
       },
       {
         path: "users",
