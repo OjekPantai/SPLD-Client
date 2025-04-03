@@ -1,36 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { format } from "date-fns";
-import {
-  Calendar,
-  User,
-  FileText,
-  MapPin,
-  Clock,
-  ChevronLeft,
-  Share2,
-  Download,
-  Printer,
-  Bookmark,
-  MessageSquare,
-  ThumbsUp,
-  Eye,
-  ArrowLeft,
-  ExternalLink,
-  Image as ImageIcon,
-  Info,
-  PenTool,
-  Shield,
-} from "lucide-react";
+import { FileText, ChevronLeft, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Breadcrumb,
@@ -39,28 +11,13 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNarratives } from "@/hooks/useNarratives";
+import ContentViewer from "@/components/ui/content-viewer";
+import DetailPageHeader from "@/components/ui/detail-page-header";
 
 const DetailNarrativePage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [selectedImage, setSelectedImage] = useState(null);
   const { narrative, loading, error, fetchNarrativeById } = useNarratives();
 
   useEffect(() => {
@@ -69,33 +26,9 @@ const DetailNarrativePage = () => {
     }
   }, [id, fetchNarrativeById]);
 
-  const formatImagePath = (filePath) => {
-    if (!filePath) return "/placeholder.svg";
-    const formattedPath = filePath.replace(/\\/g, "/");
-    return `http://localhost:3000/${formattedPath}`;
-  };
-
-  const formatDate = (dateString) => {
-    try {
-      return format(new Date(dateString), "dd MMMM yyyy, HH:mm");
-    } catch (error) {
-      return dateString;
-    }
-  };
-
-  const getInitials = (name) => {
-    if (!name) return "AN";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .substring(0, 2);
-  };
-
   if (loading) {
     return (
-      <div className="container mx-auto py-6 max-w-5xl space-y-6">
+      <div className="py-6 space-y-6">
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-4 w-4" />
@@ -168,216 +101,27 @@ const DetailNarrativePage = () => {
     );
   }
 
+  const breadcrumbs = [
+    {
+      label: "Dashboard",
+      href: "/admin",
+      as: Link,
+    },
+    {
+      label: "Narratives",
+      href: "/admin/narratives",
+      as: Link,
+    },
+    {
+      label: "Detail",
+    },
+  ];
+
   return (
     <div className="container mx-auto py-6 max-w-full space-y-6">
-      <div className="space-y-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="gap-1"
-          onClick={() => navigate("/admin/narratives")}
-        >
-          <ChevronLeft className="h-4 w-4" />
-          Kembali ke Daftar Narasi
-        </Button>
+      <DetailPageHeader breadcrumbs={breadcrumbs} />
 
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink as={Link} to="/admin">
-                Dashboard
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink as={Link} to="/admin/narratives">
-                Narratives
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink>Detail</BreadcrumbLink>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="lg:col-span-3 space-y-6">
-          <Card className="overflow-hidden">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between flex-wrap gap-4">
-                <div className="space-y-1.5">
-                  <CardTitle className="text-2xl font-semibold tracking-tight">
-                    {narrative.title}
-                  </CardTitle>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Button variant="outline" className="px-4 gap-2" size="sm">
-                    <Share2 className="h-[18px] w-[18px]" />
-                    Share
-                  </Button>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="px-4 gap-2"
-                        size="sm"
-                      >
-                        <Download className="h-[18px] w-[18px]" />
-                        Export
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="min-w-[160px]">
-                      <DropdownMenuItem className="gap-3">
-                        <Printer className="h-4 w-4" />
-                        Print
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="gap-3">
-                        <Download className="h-4 w-4" />
-                        PDF
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem className="gap-3">
-                        <FileText className="h-4 w-4" />
-                        Word
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
-
-              <div className="flex items-center flex-wrap gap-x-4 gap-y-3 text-sm text-muted-foreground mt-3">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 flex-shrink-0" />
-                  <span>{formatDate(narrative.createdAt)}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <FileText className="h-4 w-4 flex-shrink-0" />
-                  <span className="truncate">
-                    {narrative.Report?.title || "Tidak ada judul"}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 flex-shrink-0" />
-                  <span> {narrative.User?.name || "Anonim"}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 flex-shrink-0" />
-                  <span> Kec. Srumbung, Kab. Magelang</span>
-                </div>
-              </div>
-            </CardHeader>
-
-            <CardContent className="pt-2">
-              <div className="prose prose-sm max-w-none mb-6">
-                <p className="whitespace-pre-wrap text-primary">
-                  {narrative.content}
-                </p>
-              </div>
-
-              {narrative.Media && narrative.Media.length > 0 && (
-                <>
-                  <h3 className="text-lg font-medium mb-3 flex items-center">
-                    <ImageIcon className="mr-2 h-5 w-5" />
-                    Media Terlampir ({narrative.Media.length})
-                  </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {narrative.Media.map((media, index) => (
-                      <Dialog key={media.id}>
-                        <DialogTrigger asChild>
-                          <div className="aspect-square overflow-hidden rounded-lg cursor-pointer">
-                            <img
-                              alt={`Media ${index + 1}`}
-                              className="object-cover w-full h-full hover:opacity-80 transition-opacity"
-                              src={formatImagePath(media.filePath)}
-                            />
-                          </div>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-4xl p-0">
-                          <img
-                            alt={`Media ${index + 1} Full`}
-                            className="w-full h-full object-contain"
-                            src={formatImagePath(media.filePath)}
-                          />
-                        </DialogContent>
-                      </Dialog>
-                    ))}
-                  </div>
-                </>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Right Sidebar */}
-        <div className="lg:col-span-1 space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <User className="h-5 w-5" />
-                Penulis
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Avatar>
-                  <AvatarImage src={narrative.User?.avatar} />
-                  <AvatarFallback>
-                    {getInitials(narrative.User?.name)}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-medium">
-                    {narrative.User?.name || "Anonim"}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {narrative.User?.role || "Pengguna"}
-                  </p>
-                </div>
-              </div>
-              <Button variant="outline" className="w-full">
-                <ExternalLink className="mr-2 h-4 w-4" />
-                Lihat Profil
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                Laporan Terkait
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {narrative.Report ? (
-                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                  <FileText className="h-5 w-5 flex-shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-xs font-semibold text-gray-900 dark:text-gray-100">
-                      {narrative.Report.title}
-                    </p>
-                  </div>
-                  <Button
-                    onClick={() =>
-                      navigate(`/admin/reports/${narrative.Report.id}`)
-                    }
-                    variant="ghost"
-                    size="icon"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                  </Button>
-                </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  Tidak ada dokumen terkait
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <ContentViewer data={narrative} type="narrative" />
     </div>
   );
 };

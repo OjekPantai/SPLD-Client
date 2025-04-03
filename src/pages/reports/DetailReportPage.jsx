@@ -1,70 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { format } from "date-fns";
-import {
-  Calendar,
-  User,
-  FileText,
-  Clock,
-  ChevronLeft,
-  Share2,
-  Download,
-  Printer,
-  Bookmark,
-  MessageSquare,
-  ThumbsUp,
-  Eye,
-  ArrowLeft,
-  ExternalLink,
-  Image as ImageIcon,
-  Info,
-  PenTool,
-  Shield,
-  AlertCircle,
-  PlusCircle,
-  PenToolIcon,
-  CheckCircleIcon,
-} from "lucide-react";
+import { FileText, ArrowLeft, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useReports } from "@/hooks/useReports";
-import { getStatusBadge } from "@/components/ui/status-badge";
-import { formatDate, getInitials } from "@/lib/utils";
+import ContentViewer from "@/components/ui/content-viewer";
+import DetailPageHeader from "@/components/ui/detail-page-header";
 
 const DetailReportPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [selectedImage, setSelectedImage] = useState(null);
   const { report, loading, error, fetchReportById } = useReports();
 
   useEffect(() => {
@@ -72,12 +18,6 @@ const DetailReportPage = () => {
       fetchReportById(id);
     }
   }, [id, fetchReportById]);
-
-  const formatImagePath = (filePath) => {
-    if (!filePath) return "/placeholder.svg";
-    const formattedPath = filePath.replace(/\\/g, "/");
-    return `http://localhost:3000/${formattedPath}`;
-  };
 
   if (loading) {
     return (
@@ -151,156 +91,32 @@ const DetailReportPage = () => {
     );
   }
 
+  const breadcrumbs = [
+    {
+      label: "Dashboard",
+      href: "/admin",
+      as: Link,
+    },
+    {
+      label: "Reports",
+      href: "/admin/reports",
+      as: Link,
+    },
+    {
+      label: "Detail",
+    },
+  ];
+
   return (
     <div className="py-6 max-w-full space-y-6">
-      <div className="space-y-2">
-        <Button
-          variant="outline"
-          className="gap-1 rounded-full"
-          onClick={() => navigate("/admin/reports")}
-        >
-          <ChevronLeft className="h-4 w-4" />
-          Kembali
-        </Button>
+      <DetailPageHeader breadcrumbs={breadcrumbs} />
 
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink as={Link} to="/admin">
-                Dashboard
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink as={Link} to="/admin/reports">
-                Reports
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink>Detail</BreadcrumbLink>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="lg:col-span-3 space-y-6">
-          <Card className="overflow-hidden">
-            <CardHeader className="pb-0">
-              <div className="flex items-center justify-between flex-wrap gap-2">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    {getStatusBadge(report.status)}
-                  </div>
-                  <CardTitle className="text-2xl">{report.title}</CardTitle>
-                </div>
-                {report.status === "submitted" ? (
-                  <div className="flex items-center gap-2">
-                    <Link to={`/admin/narratives/create/${report.id}`}>
-                      <Button variant="outline" size="sm">
-                        <PenToolIcon className="mr-1 h-4 w-4" />
-                        Tambah Narasi
-                      </Button>
-                    </Link>
-                  </div>
-                ) : (
-                  <Button variant="default" size="sm">
-                    <CheckCircleIcon className="mr-1 h-4 w-4" />
-                    Submit
-                  </Button>
-                )}
-              </div>
-
-              <div className="flex items-center flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground mt-4">
-                <div className="flex items-center">
-                  <Calendar className="mr-1 h-4 w-4" />
-                  <span>{formatDate(report.createdAt)}</span>
-                </div>
-                <div className="flex items-center">
-                  <User className="mr-1 h-4 w-4" />
-                  <span>Dibuat oleh: {report.User?.name || "Anonim"}</span>
-                </div>
-                <div className="flex items-center">
-                  <Shield className="mr-1 h-4 w-4" />
-                  <span>Polsek: {report.User?.policeSectorId || "-"}</span>
-                </div>
-              </div>
-            </CardHeader>
-
-            <CardContent className="pt-6">
-              <div className="prose prose-sm max-w-none mb-6">
-                <p className="whitespace-pre-wrap text-primary">
-                  {report.content}
-                </p>
-              </div>
-
-              {report.Media && report.Media.length > 0 && (
-                <>
-                  <h3 className="text-lg font-medium mb-3 flex items-center">
-                    <ImageIcon className="mr-2 h-5 w-5" />
-                    Media Terlampir ({report.Media.length})
-                  </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {report.Media.map((media, index) => (
-                      <Dialog key={media.id}>
-                        <DialogTrigger asChild>
-                          <div className="aspect-square overflow-hidden rounded-lg cursor-pointer">
-                            <img
-                              alt={`Media ${index + 1}`}
-                              className="object-cover w-full h-full hover:opacity-80 transition-opacity"
-                              src={formatImagePath(media.filePath)}
-                            />
-                          </div>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-4xl p-0">
-                          <img
-                            alt={`Media ${index + 1} Full`}
-                            className="w-full h-full object-contain"
-                            src={formatImagePath(media.filePath)}
-                          />
-                        </DialogContent>
-                      </Dialog>
-                    ))}
-                  </div>
-                </>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Right Sidebar */}
-        <div className="lg:col-span-1 space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <User className="h-5 w-5" />
-                Penulis
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Avatar>
-                  <AvatarImage src={report.User?.avatar} />
-                  <AvatarFallback>
-                    {getInitials(report.User?.name)}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-medium">{report.User?.name || "Anonim"}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {report.User?.role || "Pengguna"}
-                  </p>
-                </div>
-              </div>
-              <Button variant="outline" className="w-full">
-                <ExternalLink className="mr-2 h-4 w-4" />
-                Lihat Profil
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <ContentViewer
+        data={report}
+        type="report"
+        onAddNarrative={() => navigate(`/admin/narratives/create/${id}`)}
+        onSubmit={() => navigate(`/admin/reports/${id}/submit`)}
+      />
     </div>
   );
 };
