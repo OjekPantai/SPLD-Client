@@ -154,27 +154,21 @@ const NarrativeForm = () => {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle>Share Your Story</CardTitle>
-        <CardDescription>
-          Create a new narrative to share your experiences with the community
-        </CardDescription>
-      </CardHeader>
+    <Card className="w-full py-2">
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="title"
-              rules={{ required: "Title is required" }}
+              rules={{ required: "Judul wajib di isi" }}
               render={({ field }) => (
                 <FormItem>
-                  <Label>Story Title</Label>
+                  <Label>Judul Narasi</Label>
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="Enter your story title"
+                      placeholder="Judul narasi..."
                       className="text-base"
                     />
                   </FormControl>
@@ -186,14 +180,14 @@ const NarrativeForm = () => {
             <FormField
               control={form.control}
               name="content"
-              rules={{ required: "Story content is required" }}
+              rules={{ required: "Isi narasi wajib di isi" }}
               render={({ field }) => (
                 <FormItem>
-                  <Label>Your Story</Label>
+                  <Label>Isi Narasi</Label>
                   <FormControl>
                     <Textarea
                       {...field}
-                      placeholder="Tell your story in detail..."
+                      placeholder="Tulis isi narasi disini"
                       className="min-h-[200px] text-base"
                     />
                   </FormControl>
@@ -203,7 +197,7 @@ const NarrativeForm = () => {
             />
 
             <div className="space-y-3">
-              <Label>Add Media (Photos/Videos)</Label>
+              <Label>Upload foto / video</Label>
 
               <div
                 className={`border-2 border-dashed rounded-lg p-6 text-center ${
@@ -308,12 +302,8 @@ const NarrativeForm = () => {
               </Alert>
             )}
 
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full px-8 py-2.5 text-lg"
-            >
-              {loading ? "Publishing..." : "Publish Story"}
+            <Button type="submit" disabled={loading}>
+              {loading ? "Menyimpan..." : "Simpan narasi"}
             </Button>
           </form>
         </Form>
