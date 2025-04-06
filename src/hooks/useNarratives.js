@@ -117,6 +117,19 @@ export const useNarratives = () => {
     }
   };
 
+  const publishNarrative = async (id) => {
+    try {
+      const response = await put(`/narratives/${id}/publish`);
+      if (response.success) {
+        await fetchNarratives();
+      }
+      return response;
+    } catch (err) {
+      console.error(`Error updating narrative ${id}:`, err);
+      return { success: false, message: err.message };
+    }
+  };
+
   return {
     narratives,
     narrative,
@@ -124,6 +137,7 @@ export const useNarratives = () => {
     error,
     fetchNarratives,
     fetchNarrativeById,
+    publishNarrative,
     createNarrative,
     updateNarrative,
     deleteNarrative,

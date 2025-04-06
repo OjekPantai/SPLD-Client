@@ -32,6 +32,7 @@ const ListViewCard = ({ items, handleViewitem, setSelectedImage }) => (
                     alt={`Media untuk ${item.title}`}
                     className="object-cover w-full h-full cursor-pointer"
                     onClick={() => setSelectedImage(item.Media[0])}
+                    crossOrigin="anonymous"
                   />
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-xl">

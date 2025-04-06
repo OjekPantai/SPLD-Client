@@ -60,6 +60,7 @@ const GridViewCard = ({
                             }
                             alt={`Media untuk ${item.title}`}
                             className="object-cover w-full h-full"
+                            crossOrigin="anonymous"
                           />
                           <div className="absolute bottom-2 right-2 bg-background/80 p-1 rounded-md">
                             <ImageIcon className="h-3 w-3" />
@@ -75,6 +76,7 @@ const GridViewCard = ({
                             }
                             alt={`Media untuk ${item.title}`}
                             className="max-h-[70vh] object-contain rounded-md"
+                            crossOrigin="anonymous"
                           />
                         </div>
                       </DialogContent>
@@ -93,6 +95,7 @@ const GridViewCard = ({
                   src={formatImagePath(item.Media[0].filePath)}
                   alt="Media"
                   className="mt-4 rounded-md object-cover h-40 w-full"
+                  crossOrigin="anonymous"
                 />
               ))}
 

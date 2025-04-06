@@ -1,4 +1,4 @@
-import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import {
@@ -23,10 +23,11 @@ import {
   PenToolIcon,
   CheckCircleIcon,
   Shield,
+  Eye,
 } from "lucide-react";
 import { formatDate, formatImagePath, getInitials } from "@/lib/utils";
 import { getStatusBadge } from "./status-badge";
-import { useNavigate } from "react-router-dom";
+
 const ContentViewer = ({
   data,
   type = "narrative", // 'narrative' or 'report'
@@ -39,20 +40,24 @@ const ContentViewer = ({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      {/* Main Content Area */}
       <div className="lg:col-span-3 space-y-6">
         <Card className="overflow-hidden">
           <CardHeader className={isNarrative ? "pb-3" : "pb-0"}>
+            {/* Header with status, title and actions */}
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div className="space-y-1.5">
-                {!isNarrative && (
+                {isNarrative && (
                   <div className="flex items-center gap-2">
-                    {getStatusBadge && getStatusBadge(content.status)}
+                    {getStatusBadge(content.status)}
                   </div>
                 )}
                 <CardTitle className="text-2xl font-semibold tracking-tight">
                   {content.title}
                 </CardTitle>
               </div>
+
+              {/* Action Buttons - Moved to a more prominent position */}
               <div className="flex items-center gap-3">
                 {isNarrative ? (
                   <>
@@ -87,6 +92,12 @@ const ContentViewer = ({
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
+                    {content.status !== "published" && (
+                      <Button variant="default" size="sm" onClick={onSubmit}>
+                        <CheckCircleIcon className="mr-1 h-4 w-4" />
+                        Publish
+                      </Button>
+                    )}
                   </>
                 ) : content.status === "submitted" ? (
                   <Button variant="outline" size="sm" onClick={onAddNarrative}>
@@ -102,6 +113,7 @@ const ContentViewer = ({
               </div>
             </div>
 
+            {/* Metadata section */}
             <div className="flex items-center flex-wrap gap-x-4 gap-y-3 text-sm text-muted-foreground mt-3">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 flex-shrink-0" />
@@ -130,19 +142,21 @@ const ContentViewer = ({
               ) : (
                 <div className="flex items-center gap-2">
                   <Shield className="h-4 w-4 flex-shrink-0" />
-                  <span>Polsek: {content.User?.policeSectorId || "-"}</span>
+                  <span>Polsek: {content.User?.PoliceSector?.name || "-"}</span>
                 </div>
               )}
             </div>
           </CardHeader>
 
           <CardContent className={isNarrative ? "pt-2" : "pt-6"}>
+            {/* Main content text */}
             <div className="prose prose-sm max-w-none mb-6">
               <p className="whitespace-pre-wrap text-primary">
                 {content.content}
               </p>
             </div>
 
+            {/* Media attachments */}
             {content.Media && content.Media.length > 0 && (
               <>
                 <h3 className="text-lg font-medium mb-3 flex items-center">
@@ -153,11 +167,15 @@ const ContentViewer = ({
                   {content.Media.map((media, index) => (
                     <Dialog key={media.id}>
                       <DialogTrigger asChild>
-                        <div className="aspect-square overflow-hidden rounded-lg cursor-pointer">
+                        <div className="aspect-square overflow-hidden rounded-lg cursor-pointer border border-gray-200 hover:border-gray-300 transition-colors">
                           <img
                             alt={`Media ${index + 1}`}
                             className="object-cover w-full h-full hover:opacity-80 transition-opacity"
-                            src={formatImagePath(media.filePath)}
+                            src={
+                              formatImagePath(media.filePath) ||
+                              "/placeholder.svg"
+                            }
+                            crossOrigin="anonymous"
                           />
                         </div>
                       </DialogTrigger>
@@ -165,7 +183,11 @@ const ContentViewer = ({
                         <img
                           alt={`Media ${index + 1} Full`}
                           className="w-full h-full object-contain"
-                          src={formatImagePath(media.filePath)}
+                          src={
+                            formatImagePath(media.filePath) ||
+                            "/placeholder.svg"
+                          }
+                          crossOrigin="anonymous"
                         />
                       </DialogContent>
                     </Dialog>
@@ -179,6 +201,7 @@ const ContentViewer = ({
 
       {/* Right Sidebar */}
       <div className="lg:col-span-1 space-y-6">
+        {/* Author Card */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
@@ -204,7 +227,7 @@ const ContentViewer = ({
             <Button
               variant="outline"
               className="w-full"
-              onClick={() => navigate("profile", content.User?.id)}
+              onClick={() => navigate(`/profile/${content.User?.id}`)}
             >
               <ExternalLink className="mr-2 h-4 w-4" />
               Lihat Profil
@@ -212,6 +235,7 @@ const ContentViewer = ({
           </CardContent>
         </Card>
 
+        {/* Related Report Card */}
         {isNarrative && (
           <Card>
             <CardHeader>
@@ -222,11 +246,14 @@ const ContentViewer = ({
             </CardHeader>
             <CardContent className="space-y-4">
               {content.Report ? (
-                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
                   <FileText className="h-5 w-5 flex-shrink-0" />
                   <div className="flex-1">
-                    <p className="text-xs font-semibold text-gray-900 dark:text-gray-100">
+                    <p className="text-sm font-medium">
                       {content.Report.title}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatDate(content.Report.createdAt)}
                     </p>
                   </div>
                   <Button
@@ -235,6 +262,7 @@ const ContentViewer = ({
                     }
                     variant="ghost"
                     size="icon"
+                    className="h-8 w-8"
                   >
                     <ExternalLink className="h-4 w-4" />
                   </Button>

@@ -4,7 +4,6 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import PublicLayout from "./layouts/public/PublicLayout";
-import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/auth/LoginPage";
 import NarrativePage from "./pages/narratives/NarrativePage";
 import CreateNarrativePage from "./pages/narratives/CreateNarrativePage";
@@ -21,6 +20,8 @@ import DetailNarrativePage from "./pages/narratives/DetailNarrativePage";
 import useAuthStore from "./store/authStore";
 import DetailReportPage from "./pages/reports/DetailReportPage";
 import PoliceSectorPage from "./pages/policeSector/PoliceSectorPage";
+import HomePage from "./pages/home/HomePage";
+import NewsDetailPage from "./pages/home/NewsDetailPage";
 
 const protectedLoader = async () => {
   try {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
         index: true,
         element: <HomePage />,
       },
+      {
+        path: "news/:id",
+        element: <NewsDetailPage />,
+      },
     ],
   },
   {
@@ -52,10 +57,7 @@ const router = createBrowserRouter([
     element: <ProtectedLayout />,
     loader: protectedLoader,
     children: [
-      {
-        index: true,
-        element: <DashboardPage />,
-      },
+      { index: true, element: <DashboardPage /> },
       {
         path: "narratives",
         children: [
@@ -76,7 +78,7 @@ const router = createBrowserRouter([
       },
       {
         path: "police-sectors",
-        children: [{ index: true, element: <PoliceSectorPage /> }],
+        element: <PoliceSectorPage />,
       },
       {
         path: "users",
@@ -89,7 +91,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "login",
+    path: "/login",
     element: <LoginPage />,
   },
 ]);

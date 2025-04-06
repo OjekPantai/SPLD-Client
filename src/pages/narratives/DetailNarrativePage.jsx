@@ -11,13 +11,25 @@ import DetailPageHeader from "@/components/ui/detail-page-header";
 const DetailNarrativePage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { narrative, loading, error, fetchNarrativeById } = useNarratives();
+  const { narrative, loading, error, fetchNarrativeById, publishNarrative } =
+    useNarratives();
 
   useEffect(() => {
     if (id) {
       fetchNarrativeById(id);
     }
   }, [id, fetchNarrativeById]);
+
+  const handlePublish = async (data) => {
+    try {
+      const response = await publishNarrative(id, data);
+      if (response.success) {
+        navigate(`/admin/narratives/${id}`);
+      }
+    } catch (err) {
+      console.error("Error submitting report:", err);
+    }
+  };
 
   if (loading) {
     return (
@@ -114,7 +126,11 @@ const DetailNarrativePage = () => {
     <div className="py-6 max-w-full space-y-6">
       <DetailPageHeader breadcrumbs={breadcrumbs} />
 
-      <ContentViewer data={narrative} type="narrative" />
+      <ContentViewer
+        data={narrative}
+        type="narrative"
+        onSubmit={handlePublish}
+      />
     </div>
   );
 };
