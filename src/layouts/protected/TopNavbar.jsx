@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 import { Bell, Menu, Moon, Search, Shield, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
-import { MobileMenu } from "./mobileMenu";
 import NavDropdown from "./NavDropdown";
+import MobileMenu from "./MobileMenu";
 
 export function TopNavbar({
   user,

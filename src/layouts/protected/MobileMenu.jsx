@@ -65,3 +65,5 @@ export function MobileMenu({ user, navigationItems, isActive }) {
     </SheetContent>
   );
 }
+
+export default MobileMenu;
