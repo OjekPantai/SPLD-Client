@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toCapitalize } from "@/lib/utils";
 
-export function UserMenu({ user, handleLogout }) {
+export function NavDropdown({ user, handleLogout }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -78,3 +78,5 @@ export function UserMenu({ user, handleLogout }) {
     </DropdownMenu>
   );
 }
+
+export default NavDropdown;

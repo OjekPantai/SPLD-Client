@@ -1,11 +1,9 @@
-"use client";
-
 import { Link } from "react-router-dom";
 import { Bell, Menu, Moon, Search, Shield, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { MobileMenu } from "./mobileMenu";
-import { UserMenu } from "@/layouts/protected/UserMenu";
+import NavDropdown from "./NavDropdown";
 
 export function TopNavbar({
   user,
@@ -87,8 +85,7 @@ export function TopNavbar({
             </Button>
           )}
 
-          {/* User Menu */}
-          <UserMenu user={user} handleLogout={handleLogout} />
+          <NavDropdown user={user} handleLogout={handleLogout} />
         </div>
       </div>
     </header>
