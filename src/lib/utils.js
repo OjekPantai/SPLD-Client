@@ -1,8 +1,6 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-const apiUrl = import.meta.env.VITE_API_URL;
-
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
@@ -38,7 +36,7 @@ export const getInitials = (name) => {
 
 export const formatImagePath = (filePath) => {
   const formattedPath = filePath?.replace(/\\/g, "/");
-  return `${apiUrl}/${formattedPath}`;
+  return `https://api-spld.vercel.app/api/${formattedPath}`;
 };
 
 // Truncate text function

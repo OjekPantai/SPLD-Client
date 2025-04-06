@@ -1,20 +1,18 @@
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig } from "vite";
 import path from "path";
 import react from "@vitejs/plugin-react";
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), "");
-
+export default defineConfig(() => {
   return {
     plugins: [react()],
     server: {
       proxy: {
         "/api": {
-          target: env.VITE_API_URL,
+          target: "https://api-spld.vercel.app",
           changeOrigin: true,
         },
         "/media": {
-          target: env.VITE_API_URL,
+          target: "https://api-spld.vercel.app",
           changeOrigin: true,
         },
       },
