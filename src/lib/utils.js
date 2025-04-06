@@ -1,6 +1,8 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
@@ -36,7 +38,7 @@ export const getInitials = (name) => {
 
 export const formatImagePath = (filePath) => {
   const formattedPath = filePath?.replace(/\\/g, "/");
-  return `http://localhost:3000/${formattedPath}`;
+  return `${apiUrl}/${formattedPath}`;
 };
 
 // Truncate text function
